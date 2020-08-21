@@ -18,3 +18,86 @@
 .que.fileresponse div.qtype_fileresponse_response textarea {
     width: 100%;
 }
+
+.que.fileresponse .fp-toolbar .fp-btn-add, 
+.que.fileresponse .fp-toolbar .fp-btn-download, 
+.que.fileresponse .fp-toolbar .fp-btn-mkdir, 
+.que.fileresponse .fp-toolbar .fp-tb-help, 
+.que.fileresponse .fp-toolbar .fp-tb-manage, 
+.que.fileresponse .fp-toolbar .fp-tb-logout, 
+.que.fileresponse .fp-toolbar .fp-tb-refresh {
+    border: 1px solid #ccc;
+    border-bottom: 1px solid #b3b3b3;
+    border-radius: 4px;
+    background: white;
+    width: 30px;
+    height: 30px;
+}
+
+.que.fileresponse .fp-btn-add img, 
+.que.fileresponse .fp-btn-download img, 
+.que.fileresponse .fp-btn-mkdir img, 
+.que.fileresponse .fp-tb-help img, 
+.que.fileresponse .fp-tb-manage img, 
+.que.fileresponse .fp-tb-logout img, 
+.que.fileresponse .fp-tb-refresh img {
+    margin: 7px;
+}
+
+.que.fileresponse .filemanager, 
+.que.fileresponse .filepicker, 
+.que.fileresponse .file-picker {
+    font-size: 11px;
+}
+
+.que.fileresponse .filemanager .fp-navbar {
+    background: #f2f2f2;
+    border: 1px solid #bbb;
+    border-bottom: none;
+}
+
+.que.fileresponse .fp-pathbar {
+    border-top: 1px solid #bbb;
+    min-height: 20px;
+}
+
+.que.fileresponse .fp-viewbar {
+    float: right;
+    border: 1px solid #ccc;
+    border-bottom: 1px solid #b3b3b3;
+    border-radius: 4px;
+    background: white;
+}
+
+.que.fileresponse .fp-viewbar a.fp-vb-icons {
+    border-radius: 4px 0 0 4px;
+}
+
+.que.fileresponse .fp-viewbar a.checked, 
+.que.fileresponse .fp-viewbar a:active {
+    background-image: radial-gradient(ellipse at center,#fff 40%,#dfdfdf 100%);
+    background-color: #dfdfdf;
+}
+
+.que.fileresponse .fp-viewbar a {
+    width: 30px;
+    height: 30px;
+    border-right: 1px solid #ccc;
+    display: block;
+    float: left;
+}
+
+.que.fileresponse .fp-viewbar a img {
+    margin: 7px;
+    height: 15px;
+}
+
+.que.fileresponse .filepicker-filelist, 
+.que.fileresponse .filemanager-container {
+    background: #fff;
+    clear: both;
+    overflow: auto;
+    border: 1px solid #bbb !important;
+    min-height: 140px;
+    position: relative;
+}
