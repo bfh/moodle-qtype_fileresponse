@@ -202,18 +202,57 @@ foreach ($questions as $oldquestion) {
         continue;
     }
 
-    if ($dryrun == 0) {
-        try {
-            // Get contextid from question category.
-            $contextid = $DB->get_field('question_categories', 'contextid', array('id' => $oldquestion->category));
+    // Get contextid from question category.
+    $contextid = $DB->get_field('question_categories', 'contextid', array('id' => $oldquestion->category));
 
-            if ($contextid == false || !isset($contextid)) {
-                echo "<br/>[<font color='red'>ERR</font>] No context id found for question " . $oldquestion->id;
-                array_push($questionsnotmigrated, array("id" => $oldquestion->id, "name" => $question->name));
-                continue;
-            } else {
-                $nummigrated++;
-            }
+    if ($contextid == false || !isset($contextid)) {
+        echo "<br/>[<font color='red'>ERR</font>] No context id found for question " . $oldquestion->id;
+        continue;
+    }
+
+    // Pretesting files
+
+    $success = 1;
+    $status = "";
+
+    // Test mdl_question->questiontext media.
+    $testresult = test_files(
+        $fs,
+        $contextid,
+        $oldquestion->id,
+        $oldquestion->questiontext,
+        "questiontext",
+        "question");
+
+    $success = $success && $testresult[0];
+    $status .= $testresult[1];
+
+    // Test mdl_question->generalfeedback media.
+    $testresult = test_files(
+        $fs,
+        $contextid,
+        $oldquestion->id,
+        $oldquestion->generalfeedback,
+        "generalfeedback",
+        "question");
+
+    $success = $success && $testresult[0];
+    $status .= $testresult[1];
+
+    // Copy mdl_fileresponse_options->graderinfo media.
+    $testresult = test_files(
+        $fs,
+        $contextid,
+        $oldoption->questionid,
+        trim($oldoption->graderinfo),
+        "graderinfo",
+        "qtype_fileresponse");
+
+    $success = $success && $testresult[0];
+    $status .= $testresult[1];
+
+    if ($dryrun == 0 && $success) {
+        try {
 
             unset($transaction);
             $transaction = $DB->start_delegated_transaction();
@@ -313,35 +352,28 @@ foreach ($questions as $oldquestion) {
                 $DB->insert_record('tag_instance', $entry);
             }
 
-            // Dryrun = 0: Save changes to the database.
             $transaction->allow_commit();
-
-            echo '[<font style="color:#228d00;">OK </font>] - question <i>"' . $oldquestion->name . '"</i> ' .
-            '(ID: <a href="' . $CFG->wwwroot . '/question/preview.php?id=' . $oldquestion->id .
-            '" target="_blank">' . $oldquestion->id . '</a>) ';
-            echo ' > <i>"' . $newquestion->name . '"</i> ' .
-            '(ID: <a href="' . $CFG->wwwroot . '/question/preview.php?id=' . $newquestion->id .
-            '" target="_blank">' . $newquestion->id . '</a>)';
-            echo "<br/>\n";
-
         } catch (Exception $e) {
-
-            // Dryrun = 0: An error occured during migration
             $transaction->rollback($e);
-
-            echo '[<font color="red">ERR</font>] - question <i>"' . $oldquestion->name . '"</i> ' .
-            '(ID: <a href="' . $CFG->wwwroot . '/question/preview.php?id=' . $oldquestion->id .
-            '" target="_blank">' . $oldquestion->id . '</a>) not migrated';
-            echo "<br/>\n";
         }
-    } else {
-
-        // Dryrun = 1: Only show migratable questions
-        echo '[<font style="color:#228d00;">OK </font>] - question <i>"' . $oldquestion->name . '"</i> ' .
-        '(ID: <a href="' . $CFG->wwwroot . '/question/preview.php?id=' . $oldquestion->id .
-        '" target="_blank">' . $oldquestion->id . '</a>) is migratable';
-        echo "<br/>\n";
     }
+
+    // Output: Question Migration Success.
+    echo $success ? '[<font style="color:#228d00;">OK </font>]' : '[<font color="red">ERR</font>]';
+    echo ' - question <i>"' . $oldquestion->name . '"</i> ' .
+    '(ID: <a href="' . $CFG->wwwroot . '/question/preview.php?id=' . $oldquestion->id .
+    '" target="_blank">' . $oldquestion->id . '</a>) ';
+    if ($dryrun == 0) {
+        echo ($success) ? ' > <i>"' . $newquestion->name . '"</i> ' .
+        '(ID: <a href="' . $CFG->wwwroot . '/question/preview.php?id=' . $newquestion->id .
+        '" target="_blank">' . $newquestion->id . '</a>)' : '';
+    }
+    if ($dryrun == 1) {
+        echo ($success) ? " is migratable" : " is <u>not</u> migratable";
+    }
+
+    echo "<br/>$status\n";
+
 }
 
 // Showing final summary.
@@ -402,4 +434,22 @@ function copy_files($fs, $contextid, $oldid, $newid, $text, $type, $oldcomponent
             }
         }
     }
+}
+
+// Testing files
+function test_files($fs, $contextid, $oldid, $text, $type, $olcdomponent) {
+
+    $success = 1;
+    $message = "";
+
+    $filenames = get_image_filenames($text);
+    foreach ($filenames as $filename) {
+        $file = $fs->get_file($contextid, $olcdomponent, $type, $oldid, '/', $filename);
+        if (!$file) {
+            $success = 0;
+            $message .= "- File <font color='red'>$filename</font> not found in <u>$type</u><br>";
+        }
+    }
+
+    return ["0" => $success, "1" => $message];
 }
