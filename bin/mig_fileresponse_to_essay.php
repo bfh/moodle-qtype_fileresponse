@@ -251,6 +251,10 @@ foreach ($questions as $oldquestion) {
     $success = $success && $testresult[0];
     $status .= $testresult[1];
 
+    if ($success) {
+        $nummigrated++;
+    }
+
     if ($dryrun == 0 && $success) {
         try {
 
@@ -386,7 +390,7 @@ foreach ($questionsnotmigrated as $entry) {
 }
 echo "=========================================================================================<br/>\n";
 echo "SCRIPT PROCESSED: Time needed: " . round(microtime(1) - $starttime, 4) . " seconds.<br/>\n";
-echo ($dryrun == 0 ? $nummigrated . "/" : null) . count($questions) . " question(s) " . ($dryrun == 1 ? "would be " : null) . "migrated.<br/>\n";
+echo $nummigrated . "/" . count($questions) . " question(s) " . ($dryrun == 1 ? "would be " : null) . "migrated.<br/>\n";
 echo "=========================================================================================<br/>\n";
 die();
 
