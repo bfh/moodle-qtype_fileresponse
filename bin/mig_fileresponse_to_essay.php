@@ -311,6 +311,13 @@ foreach ($questions as $oldquestion) {
 
             // Processing mdl_fileresponse_options -> mdl_essay_options.
             unset($newoption);
+
+            $oldoption->responseformat = isset($oldoption->responseformat ) ? $oldoption->responseformat : 0;
+            $oldoption->responsefieldlines = isset($oldoption->responsefieldlines) ? $oldoption->responsefieldlines : 0;
+            $oldoption->attachments = isset($oldoption->attachments) ?  $oldoption->attachments : 0;
+            $oldoption->graderinfoformat = isset($oldoption->graderinfoformat) ? $oldoption->graderinfoformat : 1;
+            $oldoption->responsetemplateformat = isset($oldoption->responsetemplateformat) ? $oldoption->responsetemplateformat : 1;
+
             $newoption = new stdClass();
             $newoption->questionid = $newquestion->id;
             $newoption->responseformat = $oldoption->responsefieldlines == 0 ? 'noinline' : 'plain';
@@ -323,6 +330,7 @@ foreach ($questions as $oldquestion) {
             $newoption->responsetemplate = $oldoption->responsetemplate;
             $newoption->responsetemplateformat = $oldoption->responsetemplateformat;
             $newoption->filetypeslist = '*';
+            $newoption->maxbytes = 0;
             $newoption->id = $DB->insert_record('qtype_essay_options', $newoption);
 
             // Copy mdl_fileresponse_options->graderinfo media.
