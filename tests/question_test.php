@@ -46,7 +46,6 @@ require_once($CFG->dirroot . '/question/type/fileresponse/renderer.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class question_test extends \advanced_testcase {
-
     /**
      * Makes a qtype_sc question.
      * @return qtype_kprime
@@ -93,8 +92,12 @@ final class question_test extends \advanced_testcase {
     public function test_summarise_response(): void {
         $longstring = str_repeat('0123456789', 50);
         $fileresponse = $this->make_a_fileresponse_question();
-        $this->assertEquals($longstring, $fileresponse->summarise_response(
-                ['answer' => $longstring, 'answerformat' => FORMAT_HTML]));
+        $this->assertEquals(
+            $longstring,
+            $fileresponse->summarise_response(
+                ['answer' => $longstring, 'answerformat' => FORMAT_HTML],
+            )
+        );
     }
 
     /**
@@ -109,41 +112,68 @@ final class question_test extends \advanced_testcase {
 
         $fileresponse->start_attempt(new \question_attempt_step(), 1);
 
-        $this->assertTrue($fileresponse->is_same_response(
+        $this->assertTrue(
+            $fileresponse->is_same_response(
                 [],
-                ['answer' => '']));
-
-        $this->assertTrue($fileresponse->is_same_response(
                 ['answer' => ''],
-                ['answer' => '']));
+            )
+        );
 
-        $this->assertTrue($fileresponse->is_same_response(
+        $this->assertTrue(
+            $fileresponse->is_same_response(
                 ['answer' => ''],
-                []));
+                ['answer' => ''],
+            )
+        );
 
-        $this->assertFalse($fileresponse->is_same_response(
+        $this->assertTrue(
+            $fileresponse->is_same_response(
+                ['answer' => ''],
+                [],
+            )
+        );
+
+        $this->assertFalse(
+            $fileresponse->is_same_response(
                 ['answer' => 'Hello'],
-                []));
+                [],
+            )
+        );
 
-        $this->assertFalse($fileresponse->is_same_response(
+        $this->assertFalse(
+            $fileresponse->is_same_response(
                 ['answer' => 'Hello'],
-                ['answer' => '']));
+                ['answer' => ''],
+            )
+        );
 
-        $this->assertFalse($fileresponse->is_same_response(
+        $this->assertFalse(
+            $fileresponse->is_same_response(
                 ['answer' => 0],
-                ['answer' => '']));
-
-        $this->assertFalse($fileresponse->is_same_response(
                 ['answer' => ''],
-                ['answer' => 0]));
+            )
+        );
 
-        $this->assertFalse($fileresponse->is_same_response(
+        $this->assertFalse(
+            $fileresponse->is_same_response(
+                ['answer' => ''],
+                ['answer' => 0],
+            )
+        );
+
+        $this->assertFalse(
+            $fileresponse->is_same_response(
                 ['answer' => '0'],
-                ['answer' => '']));
-
-        $this->assertFalse($fileresponse->is_same_response(
                 ['answer' => ''],
-                ['answer' => '0']));
+            )
+        );
+
+        $this->assertFalse(
+            $fileresponse->is_same_response(
+                ['answer' => ''],
+                ['answer' => '0'],
+            )
+        );
     }
 
     /**
@@ -158,41 +188,68 @@ final class question_test extends \advanced_testcase {
 
         $fileresponse->start_attempt(new \question_attempt_step(), 1);
 
-        $this->assertTrue($fileresponse->is_same_response(
+        $this->assertTrue(
+            $fileresponse->is_same_response(
                 [],
-                ['answer' => 'Once upon a time']));
-
-        $this->assertTrue($fileresponse->is_same_response(
-                ['answer' => ''],
-                ['answer' => 'Once upon a time']));
-
-        $this->assertTrue($fileresponse->is_same_response(
                 ['answer' => 'Once upon a time'],
-                ['answer' => '']));
+            )
+        );
 
-        $this->assertTrue($fileresponse->is_same_response(
+        $this->assertTrue(
+            $fileresponse->is_same_response(
                 ['answer' => ''],
-                []));
-
-        $this->assertTrue($fileresponse->is_same_response(
                 ['answer' => 'Once upon a time'],
-                []));
+            )
+        );
 
-        $this->assertFalse($fileresponse->is_same_response(
+        $this->assertTrue(
+            $fileresponse->is_same_response(
+                ['answer' => 'Once upon a time'],
+                ['answer' => ''],
+            )
+        );
+
+        $this->assertTrue(
+            $fileresponse->is_same_response(
+                ['answer' => ''],
+                [],
+            )
+        );
+
+        $this->assertTrue(
+            $fileresponse->is_same_response(
+                ['answer' => 'Once upon a time'],
+                [],
+            )
+        );
+
+        $this->assertFalse(
+            $fileresponse->is_same_response(
                 ['answer' => 0],
-                ['answer' => '']));
-
-        $this->assertFalse($fileresponse->is_same_response(
                 ['answer' => ''],
-                ['answer' => 0]));
+            )
+        );
 
-        $this->assertFalse($fileresponse->is_same_response(
+        $this->assertFalse(
+            $fileresponse->is_same_response(
+                ['answer' => ''],
+                ['answer' => 0],
+            )
+        );
+
+        $this->assertFalse(
+            $fileresponse->is_same_response(
                 ['answer' => '0'],
-                ['answer' => '']));
-
-        $this->assertFalse($fileresponse->is_same_response(
                 ['answer' => ''],
-                ['answer' => '0']));
+            )
+        );
+
+        $this->assertFalse(
+            $fileresponse->is_same_response(
+                ['answer' => ''],
+                ['answer' => '0'],
+            )
+        );
     }
 
     /**

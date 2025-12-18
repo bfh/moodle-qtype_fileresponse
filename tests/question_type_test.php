@@ -44,7 +44,6 @@ require_once($CFG->dirroot . '/question/type/fileresponse/edit_fileresponse_form
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class question_type_test extends \advanced_testcase {
-
     /** @var fileresponse instance of the question type class to test. */
     protected $qtype;
 
@@ -113,6 +112,5 @@ final class question_type_test extends \advanced_testcase {
     public function test_get_possible_responses(): void {
         $q = $this->get_test_question_data();
         $this->assertEquals([], $this->qtype->get_possible_responses($q));
-
     }
 }

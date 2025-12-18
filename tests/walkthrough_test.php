@@ -41,7 +41,6 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
-
     /**
      * Helper method: Store a test file with a given name and contents in a
      * draft file area.
@@ -64,6 +63,12 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $fs->create_file_from_string($filerecord, $contents);
     }
 
+    /**
+     * Test interactive behaviour
+     *
+     * @covers \qtype_fileresponse
+     * @return void
+     */
     public function test_interactive_behaviour(): void {
     }
 }

@@ -1,3 +1,4 @@
+[![Moodle Plugin CI](https://github.com/bfh/moodle-qtype_fileresponse/actions/workflows/moodle-ci.yml/badge.svg)](https://github.com/bfh/moodle-qtype_fileresponse/actions/workflows/moodle-ci.yml)
 # File Response
 
 File Response is a Moodle question type that provides some additional functions compared to the essay question type, which can as well be used to prompt for files in a question setting.

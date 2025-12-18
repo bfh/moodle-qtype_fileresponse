@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+
 /**
  * Fileresponse question renderer class.
  *
@@ -37,9 +39,10 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_fileresponse_renderer extends qtype_renderer {
-
-    public function formulation_and_controls(question_attempt $qa,
-            question_display_options $options) {
+    public function formulation_and_controls(
+        question_attempt $qa,
+        question_display_options $options
+    ) {
 
         $question = $qa->get_question();
         $responseoutput = $question->get_format_renderer($this->page);
@@ -54,12 +57,21 @@ class qtype_fileresponse_renderer extends qtype_renderer {
 
         if ($question->responsefieldlines > 0) {
             if (empty($options->readonly)) {
-                $answer = $responseoutput->response_area_input('answer', $qa,
-                    $step, $question->responsefieldlines, $options->context);
-
+                $answer = $responseoutput->response_area_input(
+                    'answer',
+                    $qa,
+                    $step,
+                    $question->responsefieldlines,
+                    $options->context,
+                );
             } else {
-                $answer = $responseoutput->response_area_read_only('answer', $qa,
-                    $step, $question->responsefieldlines, $options->context);
+                $answer = $responseoutput->response_area_read_only(
+                    'answer',
+                    $qa,
+                    $step,
+                    $question->responsefieldlines,
+                    $options->context,
+                );
             }
         } else {
             $answer = '';
@@ -68,23 +80,33 @@ class qtype_fileresponse_renderer extends qtype_renderer {
         $files = '';
         if ($question->attachments) {
             if (empty($options->readonly)) {
-                $files = $this->files_input($qa, $question->attachments, $options,
-                    $question->forcedownload, $question->allowpickerplugins);
-
+                $files = $this->files_input(
+                    $qa,
+                    $question->attachments,
+                    $options,
+                    $question->forcedownload,
+                    $question->allowpickerplugins,
+                );
             } else {
                 $files = $this->files_read_only($qa, $options);
             }
         }
 
         $result = '';
-        $result .= html_writer::tag('div', $question->format_questiontext($qa),
-                array('class' => 'qtext'));
+        $result .= html_writer::tag(
+            'div',
+            $question->format_questiontext($qa),
+            ['class' => 'qtext'],
+        );
 
-        $result .= html_writer::start_tag('div', array('class' => 'ablock'));
+        $result .= html_writer::start_tag('div', ['class' => 'ablock']);
 
         if ($answer) {
-            $result .= html_writer::tag('div', $answer, array('class' => 'qtext'
-            ));
+            $result .= html_writer::tag(
+                'div',
+                $answer,
+                ['class' => 'qtext'],
+            );
         }
 
         /* How many files are expected, already uploaded and saved ? */
@@ -96,17 +118,22 @@ class qtype_fileresponse_renderer extends qtype_renderer {
                 // No explanation is needed.
                 break;
             case 1: // One file required.
-                $result .= html_writer::tag('div',
+                $result .= html_writer::tag(
+                    'div',
                     get_string('oneattachmentexpected', 'qtype_fileresponse'),
-                    array('class' => 'answer'
-                    ));
+                    ['class' => 'answer'],
+                );
                 break;
             default: // Two or three file required.
-                $result .= html_writer::tag('div',
-                    get_string('nattachmentsexpected', 'qtype_fileresponse',
-                        $expectedattachments),
-                    array('class' => 'answer'
-                    ));
+                $result .= html_writer::tag(
+                    'div',
+                    get_string(
+                        'nattachmentsexpected',
+                        'qtype_fileresponse',
+                        $expectedattachments
+                    ),
+                    ['class' => 'answer'],
+                );
                 break;
         }
 
@@ -119,75 +146,87 @@ class qtype_fileresponse_renderer extends qtype_renderer {
                     break;
                 case 1:
                     // Exactly one file of unlimited submitted.
-                    $result .= html_writer::tag('div',
+                    $result .= html_writer::tag(
+                        'div',
                         get_string('oneattachmentsubmitted', 'qtype_fileresponse') .
                         "<br />&#160;<br />",
-                        array('class' => 'answer'
-                        ));
+                        ['class' => 'answer'],
+                    );
                     break;
                 default:
                     // Exactly n > 1 files of unlimited submitted.
-                    $result .= html_writer::tag('div',
+                    $result .= html_writer::tag(
+                        'div',
                         get_string('nattachmentssubmitted', 'qtype_fileresponse', $filecount) .
                         "<br />&#160;<br />",
-                        array('class' => 'answer'
-                        ));
+                        ['class' => 'answer'],
+                    );
                     break;
             }
         } else if ($expectedattachments == 1) {
             // Exactly one attachment expected.
             if ($filecount == 0) {
                 // No file of 1 submitted.
-                $result .= html_writer::tag('div',
+                $result .= html_writer::tag(
+                    'div',
                     get_string('noofoneattachmentsubmitted', 'qtype_fileresponse') .
                     "<br />&#160;<br />",
-                    array('class' => 'answer'
-                    ));
+                    ['class' => 'answer'],
+                );
             } else if ($filecount == 1) {
                 // Exactly 1 file of 1 submitted.
-                $result .= html_writer::tag('div',
+                $result .= html_writer::tag(
+                    'div',
                     get_string('oneofoneattachmentsubmitted', 'qtype_fileresponse') .
                     "<br />&#160;<br />",
-                    array('class' => 'answer'
-                    ));
+                    ['class' => 'answer'],
+                );
             } else {
                 // This should not happen: $filecount larger than $expectedattachments.
-                $result .= html_writer::tag('div',
+                $result .= html_writer::tag(
+                    'div',
                     get_string('nattachmentssubmitted', 'qtype_fileresponse', $filecount) .
                     "<br />&#160;<br />",
-                    array('class' => 'answer'
-                    ));
+                    ['class' => 'answer'],
+                );
             }
         } else {
             /* Exactly a certain amount (but more than one) of attachment expected. */
             if ($filecount == 0) {
                 /* No file of n > 1 submitted yet. */
-                $result .= html_writer::tag('div',
-                    get_string('noofnattachmentsubmitted', 'qtype_fileresponse',
-                        $expectedattachments) . "<br />&#160;<br />",
-                    array('class' => 'answer'
-                    ));
+                $result .= html_writer::tag(
+                    'div',
+                    get_string('noofnattachmentsubmitted', 'qtype_fileresponse', $expectedattachments) .
+                    "<br />&#160;<br />",
+                    ['class' => 'answer'],
+                );
             } else if (($expectedattachments > 1) && ($filecount == 1)) {
                 /* Exactly one file of n > 1 submitted. */
-                $result .= html_writer::tag('div',
-                    get_string('oneofnattachmentssubmitted', 'qtype_fileresponse',
-                        $expectedattachments) . "<br />&#160;<br />",
-                    array('class' => 'answer'
-                    ));
+                $result .= html_writer::tag(
+                    'div',
+                    get_string('oneofnattachmentssubmitted', 'qtype_fileresponse', $expectedattachments) .
+                    "<br />&#160;<br />",
+                    ['class' => 'answer'],
+                );
             } else if ($filecount > $expectedattachments) {
                 /* This should not happen: $filecount larger than $expectedattachments. */
-                $result .= html_writer::tag('div',
+                $result .= html_writer::tag(
+                    'div',
                     get_string('nattachmentssubmitted', 'qtype_fileresponse', $filecount) .
                     "<br />&#160;<br />",
-                    array('class' => 'answer'
-                    ));
+                    ['class' => 'answer'],
+                );
             } else {
                 /* n > 1 files of n > 1 submitted yet. */
-                $result .= html_writer::tag('div',
-                    $filecount . get_string('ofnattachmentssubmitted', 'qtype_fileresponse',
-                        $expectedattachments) . "<br />&#160;<br />",
-                    array('class' => 'answer'
-                    ));
+                $result .= html_writer::tag(
+                    'div',
+                    $filecount . get_string(
+                        'ofnattachmentssubmitted',
+                        'qtype_fileresponse',
+                        $expectedattachments,
+                    ) . "<br />&#160;<br />",
+                    ['class' => 'answer'],
+                );
             }
         }
         $result .= html_writer::tag('div', $files, array('class' => 'attachments'
@@ -209,9 +248,18 @@ class qtype_fileresponse_renderer extends qtype_renderer {
         $output = array();
 
         foreach ($files as $file) {
-            $output[] = html_writer::tag('p', html_writer::link($qa->get_response_file_url($file),
-                   $this->output->pix_icon(file_file_icon($file), get_mimetype_description($file),
-                    'moodle', array('class' => 'icon')) . ' ' . s($file->get_filename())));
+            $output[] = html_writer::tag(
+                'p',
+                html_writer::link(
+                    $qa->get_response_file_url($file),
+                    $this->output->pix_icon(
+                        file_file_icon($file),
+                        get_mimetype_description($file),
+                        'moodle',
+                        ['class' => 'icon'],
+                    ) . ' ' . s($file->get_filename()),
+                ),
+            );
         }
         return implode($output);
     }
@@ -225,8 +273,13 @@ class qtype_fileresponse_renderer extends qtype_renderer {
      * @param int $forcedownload
      * @param bool $allowpickerplugins
      */
-    public function files_input(question_attempt $qa, $numallowed,
-        question_display_options $options, $forcedownload, $allowpickerplugins) {
+    public function files_input(
+        question_attempt $qa,
+        $numallowed,
+        question_display_options $options,
+        $forcedownload,
+        $allowpickerplugins
+    ) {
         global $CFG;
 
         /* Removed the call to lib/form/filemanager.php because we've cloned the filepicker. */
@@ -235,12 +288,16 @@ class qtype_fileresponse_renderer extends qtype_renderer {
         $pickeroptions->mainfile = null;
         $pickeroptions->maxfiles = $numallowed;
         $pickeroptions->itemid = $qa->prepare_response_files_draft_itemid(
-                'attachments', $options->context->id);
+            'attachments',
+            $options->context->id,
+        );
         $pickeroptions->context = $options->context;
         $pickeroptions->return_types = FILE_INTERNAL | FILE_CONTROLLED_LINK;
 
         $pickeroptions->itemid = $qa->prepare_response_files_draft_itemid(
-                'attachments', $options->context->id);
+            'attachments',
+            $options->context->id,
+        );
         $pickeroptions->accepted_types = $qa->get_question()->filetypeslist;
         $pickeroptions->allowpickerplugins = $allowpickerplugins;
 
@@ -260,23 +317,35 @@ class qtype_fileresponse_renderer extends qtype_renderer {
             // Don't download fix.
             require_once('fileresponsesimplifiedfilemanager.php');
             $frsfm = new form_fileresponsesimplifiedfilemanager($pickeroptions);
-            $filesrenderer = $this->page->get_renderer('qtype_fileresponse',
-                'fileresponsesimplifiedfilemanager');
-            return $filesrenderer->render($frsfm) . html_writer::empty_tag('input',
-                    array('type' => 'hidden', 'name' => $qa->get_qt_field_name('attachments'),
-                        'value' => $pickeroptions->itemid
-                    )) . $text;
+            $filesrenderer = $this->page->get_renderer(
+                'qtype_fileresponse',
+                'fileresponsesimplifiedfilemanager',
+            );
+            return $filesrenderer->render($frsfm) . html_writer::empty_tag(
+                'input',
+                [
+                    'type' => 'hidden',
+                    'name' => $qa->get_qt_field_name('attachments'),
+                    'value' => $pickeroptions->itemid,
+                ],
+            ) . $text;
         } else {
             // Allow download.
             require_once('fileresponsefilemanager.php');
             // Check allowed repositories.
             $frfm = new form_fileresponsefilemanager($pickeroptions);
-            $filesrenderer = $this->page->get_renderer('qtype_fileresponse',
-                'fileresponsefilemanager');
-            return $filesrenderer->render($frfm) . html_writer::empty_tag('input',
-                    array('type' => 'hidden', 'name' => $qa->get_qt_field_name('attachments'),
-                        'value' => $pickeroptions->itemid
-                    )) . $text;
+            $filesrenderer = $this->page->get_renderer(
+                'qtype_fileresponse',
+                'fileresponsefilemanager',
+            );
+            return $filesrenderer->render($frfm) . html_writer::empty_tag(
+                'input',
+                [
+                    'type' => 'hidden',
+                    'name' => $qa->get_qt_field_name('attachments'),
+                    'value' => $pickeroptions->itemid,
+                ],
+            ) . $text;
         }
     }
 
@@ -308,11 +377,18 @@ class qtype_fileresponse_renderer extends qtype_renderer {
         }
 
         $question = $qa->get_question();
-        return html_writer::nonempty_tag('div',
-                $question->format_text($question->graderinfo, $question->questiontextformat, $qa,
-                        'qtype_fileresponse', 'graderinfo', $question->id),
-                array('class' => 'graderinfo'
-                ));
+        return html_writer::nonempty_tag(
+            'div',
+            $question->format_text(
+                $question->graderinfo,
+                $question->questiontextformat,
+                $qa,
+                'qtype_fileresponse',
+                'graderinfo',
+                $question->id
+            ),
+            ['class' => 'graderinfo'],
+        );
     }
 }
 
@@ -334,8 +410,13 @@ abstract class qtype_fileresponse_format_renderer_base extends plugin_renderer_b
      * @param object $context the context teh output belongs to.
      * @return string html to display the response.
      */
-    abstract public function response_area_read_only($name, question_attempt $qa,
-            question_attempt_step $step, $lines, $context);
+    abstract public function response_area_read_only(
+        $name,
+        question_attempt $qa,
+        question_attempt_step $step,
+        $lines,
+        $context
+    );
 
     /**
      * Render the students respone when the question is in read-only mode.
@@ -346,8 +427,13 @@ abstract class qtype_fileresponse_format_renderer_base extends plugin_renderer_b
      * @param object $context the context teh output belongs to.
      * @return string html to display the response for editing.
      */
-    abstract public function response_area_input($name, question_attempt $qa,
-            question_attempt_step $step, $lines, $context);
+    abstract public function response_area_input(
+        $name,
+        question_attempt $qa,
+        question_attempt_step $step,
+        $lines,
+        $context
+    );
 
     /**
      * @return string specific class name to add to the input element.
@@ -363,7 +449,6 @@ abstract class qtype_fileresponse_format_renderer_base extends plugin_renderer_b
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_fileresponse_format_noinline_renderer extends plugin_renderer_base {
-
     protected function class_name() {
         return 'qtype_fileresponse_noinline';
     }
@@ -375,7 +460,6 @@ class qtype_fileresponse_format_noinline_renderer extends plugin_renderer_base {
     public function response_area_input($name, $qa, $step, $lines, $context) {
         return '';
     }
-
 }
 
 /**
@@ -391,8 +475,16 @@ class qtype_fileresponse_format_editor_renderer extends plugin_renderer_base {
     }
 
     public function response_area_read_only($name, $qa, $step, $lines, $context) {
-        return html_writer::tag('div', $this->prepare_response($name, $qa, $step, $context),
-                array('class' => $this->class_name() . ' qtype_fileresponse_response readonly'));
+        return html_writer::tag(
+            'div',
+            $this->prepare_response(
+                $name,
+                $qa,
+                $step,
+                $context
+            ),
+            ['class' => $this->class_name() . ' qtype_fileresponse_response readonly']
+        );
     }
 
     public function response_area_input($name, $qa, $step, $lines, $context) {
@@ -410,26 +502,43 @@ class qtype_fileresponse_format_editor_renderer extends plugin_renderer_base {
             $formats[$fid] = $strformats[$fid];
         }
 
-        list($draftitemid, $response) = $this->prepare_response_for_editing(
-                $name, $step, $context);
+        [$draftitemid, $response] = $this->prepare_response_for_editing(
+            $name,
+            $step,
+            $context,
+        );
 
         $editor->set_text($response);
-        $editor->use_editor($id, $this->get_editor_options($context),
-            $this->get_filepicker_options($context, $draftitemid));
+        $editor->use_editor(
+            $id,
+            $this->get_editor_options($context),
+            $this->get_filepicker_options($context, $draftitemid)
+        );
 
         $output = '';
         $output .= html_writer::start_tag('div', array('class' =>
                 $this->class_name() . ' qtype_fileresponse_response'));
 
-        $output .= html_writer::tag('div', html_writer::tag('textarea', s($response),
-                array('id' => $id, 'name' => $inputname, 'rows' => $lines, 'cols' => 60)));
+        $output .= html_writer::tag(
+            'div',
+            html_writer::tag(
+                'textarea',
+                s($response),
+                ['id' => $id, 'name' => $inputname, 'rows' => $lines, 'cols' => 60],
+            )
+        );
 
         $output .= html_writer::start_tag('div');
         if (count($formats) == 1) {
             reset($formats);
-            $output .= html_writer::empty_tag('input', array('type' => 'hidden',
-                    'name' => $inputname . 'format', 'value' => key($formats)));
-
+            $output .= html_writer::empty_tag(
+                'input',
+                [
+                    'type' => 'hidden',
+                    'name' => $inputname . 'format',
+                    'value' => key($formats),
+                ],
+            );
         } else {
             $output .= html_writer::label(get_string('format'), 'menu' . $inputname . 'format', false);
             $output .= ' ';
@@ -451,16 +560,23 @@ class qtype_fileresponse_format_editor_renderer extends plugin_renderer_base {
      * @param object $context the context the attempt belongs to.
      * @return string the response prepared for display.
      */
-    protected function prepare_response($name, question_attempt $qa,
-            question_attempt_step $step, $context) {
+    protected function prepare_response(
+        $name,
+        question_attempt $qa,
+        question_attempt_step $step,
+        $context
+    ) {
         if (!$step->has_qt_var($name)) {
             return '';
         }
 
         $formatoptions = new stdClass();
         $formatoptions->para = false;
-        return format_text($step->get_qt_var($name), $step->get_qt_var($name . 'format'),
-            $formatoptions);
+        return format_text(
+            $step->get_qt_var($name),
+            $step->get_qt_var($name . 'format'),
+            $formatoptions,
+        );
     }
 
     /**
@@ -470,8 +586,11 @@ class qtype_fileresponse_format_editor_renderer extends plugin_renderer_base {
      * @param object $context the context the attempt belongs to.
      * @return string the response prepared for display.
      */
-    protected function prepare_response_for_editing($name,
-            question_attempt_step $step, $context) {
+    protected function prepare_response_for_editing(
+        $name,
+        question_attempt_step $step,
+        $context
+    ) {
         return array(0, $step->get_qt_var($name));
     }
 
@@ -516,23 +635,37 @@ class qtype_fileresponse_format_editorfilepicker_renderer extends qtype_fileresp
         return 'qtype_fileresponse_editorfilepicker';
     }
 
-    protected function prepare_response($name, question_attempt $qa,
-            question_attempt_step $step, $context) {
+    protected function prepare_response(
+        $name,
+        question_attempt $qa,
+        question_attempt_step $step,
+        $context
+    ) {
         if (!$step->has_qt_var($name)) {
             return '';
         }
 
         $formatoptions = new stdClass();
         $formatoptions->para = false;
-        $text = $qa->rewrite_response_pluginfile_urls($step->get_qt_var($name),
-                $context->id, 'answer', $step);
+        $text = $qa->rewrite_response_pluginfile_urls(
+            $step->get_qt_var($name),
+            $context->id,
+            'answer',
+            $step
+        );
         return format_text($text, $step->get_qt_var($name . 'format'), $formatoptions);
     }
 
-    protected function prepare_response_for_editing($name,
-            question_attempt_step $step, $context) {
+    protected function prepare_response_for_editing(
+        $name,
+        question_attempt_step $step,
+        $context
+    ) {
         return $step->prepare_response_files_draft_itemid_with_text(
-                $name, $context->id, $step->get_qt_var($name));
+            $name,
+            $context->id,
+            $step->get_qt_var($name),
+        );
     }
 
     /**
@@ -591,12 +724,30 @@ class qtype_fileresponse_format_editorfilepicker_renderer extends qtype_fileresp
             'sesskey' => sesskey(),
         ));
 
-        return html_writer::empty_tag('input', array('type' => 'hidden',
-                'name' => $inputname . ':itemid', 'value' => $draftitemid)) .
-                html_writer::tag('noscript', html_writer::tag('div',
-                    html_writer::tag('object', '', array('type' => 'text/html',
-                        'data' => $nonjspickerurl, 'height' => 160, 'width' => 600,
-                        'style' => 'border: 1px solid #000;'))));
+        return html_writer::empty_tag(
+            'input',
+            [
+                'type' => 'hidden',
+                'name' => $inputname . ':itemid',
+                'value' => $draftitemid,
+            ],
+        ) . html_writer::tag(
+            'noscript',
+            html_writer::tag(
+                'div',
+                html_writer::tag(
+                    'object',
+                    '',
+                    [
+                        'type' => 'text/html',
+                        'data' => $nonjspickerurl,
+                        'height' => 160,
+                        'width' => 600,
+                        'style' => 'border: 1px solid #000;'
+                    ],
+                ),
+            ),
+        );
     }
 }
 
