@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+
 /**
  * Fileresponse simplified FileManager form element
  *
@@ -30,6 +32,7 @@ defined('MOODLE_INTERNAL') || die();
 // phpcs:disable Generic.Arrays.DisallowLongArraySyntax
 // phpcs:disable moodle.Commenting.MissingDocblock.Function
 // phpcs:disable moodle.NamingConventions.ValidFunctionName.LowercaseMethod
+// phpcs:disable PSR2.Classes.PropertyDeclaration.Underscore
 
 global $CFG;
 
@@ -83,8 +86,11 @@ class MoodleQuickForm_fileresponsesimplifiedfilemanager extends HTML_QuickForm_e
             }
         }
         if (!empty($options['maxbytes'])) {
-            $this->_options['maxbytes'] = get_user_max_upload_file_size($PAGE->context,
-                    $CFG->maxbytes, $options['maxbytes']);
+            $this->_options['maxbytes'] = get_user_max_upload_file_size(
+                $PAGE->context,
+                $CFG->maxbytes,
+                $options['maxbytes'],
+            );
         }
         if (empty($options['return_types'])) {
             $this->_options['return_types'] = (FILE_INTERNAL | FILE_REFERENCE | FILE_CONTROLLED_LINK);
@@ -162,8 +168,7 @@ class MoodleQuickForm_fileresponsesimplifiedfilemanager extends HTML_QuickForm_e
      */
     public function setmaxbytes($maxbytes) {
         global $CFG, $PAGE;
-        $this->_options['maxbytes'] = get_user_max_upload_file_size($PAGE->context, $CFG->maxbytes,
-                $maxbytes);
+        $this->_options['maxbytes'] = get_user_max_upload_file_size($PAGE->context, $CFG->maxbytes, $maxbytes);
     }
 
     /**
@@ -296,13 +301,15 @@ class MoodleQuickForm_fileresponsesimplifiedfilemanager extends HTML_QuickForm_e
         $output = $PAGE->get_renderer('core', 'files');
         $html .= $this->output->render($frsfm);
 
-        $html .= html_writer::empty_tag('input',
-                ['value' => $draftitemid, 'name' => $elname, 'type' => 'hidden'
-                ]);
+        $html .= html_writer::empty_tag(
+            'input',
+            ['value' => $draftitemid, 'name' => $elname, 'type' => 'hidden'],
+        );
         // Label element needs 'for' attribute work.
-        $html .= html_writer::empty_tag('input',
-                ['value' => '', 'id' => 'id_' . $elname, 'type' => 'hidden'
-                ]);
+        $html .= html_writer::empty_tag(
+            'input',
+            ['value' => '', 'id' => 'id_' . $elname, 'type' => 'hidden'],
+        );
 
         if (!empty($options->accepted_types) && $options->accepted_types != '*') {
             $html .= html_writer::tag('p', get_string('filesofthesetypes', 'form'));
@@ -367,8 +374,6 @@ class MoodleQuickForm_fileresponsesimplifiedfilemanager extends HTML_QuickForm_e
     }
 }
 
-    // @codingStandardsIgnoreEnd
-
 /**
  * Data structure representing a fileresponse simplified file manager.
  *
@@ -381,7 +386,7 @@ class MoodleQuickForm_fileresponsesimplifiedfilemanager extends HTML_QuickForm_e
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class form_fileresponsesimplifiedfilemanager implements renderable {
-
+    // phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
     // phpcs:disable NormalizedArrays.Arrays.CommaAfterLast.MissingMultiLine
     // phpcs:disable Generic.Arrays.DisallowLongArraySyntax
     // phpcs:disable moodle.Commenting.MissingDocblock.Function
@@ -443,8 +448,14 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
 
         // Calculate file count.
         $usercontext = context_user::instance($USER->id);
-        $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $options->itemid, 'id',
-                false);
+        $files = $fs->get_area_files(
+            $usercontext->id,
+            'user',
+            'draft',
+            $options->itemid,
+            'id',
+            false,
+        );
         $filecount = count($files);
         $this->options->filecount = $filecount;
 
@@ -456,20 +467,26 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
         // Calculate the maximum file size as minimum from what is specified in filepicker options,
         // course options, global configuration and php settings.
         $coursebytes = $maxbytes = 0;
-        list($context, $course, $cm) = get_context_info_array($this->options->context->id);
+        [$context, $course, $cm] = get_context_info_array($this->options->context->id);
         if (is_object($course)) {
             $coursebytes = $course->maxbytes;
         }
         if (!empty($this->options->maxbytes) && $this->options->maxbytes > 0) {
             $maxbytes = $this->options->maxbytes;
         }
-        $this->options->maxbytes = get_user_max_upload_file_size($context, $CFG->maxbytes,
-                $coursebytes, $maxbytes);
+        $this->options->maxbytes = get_user_max_upload_file_size(
+            $context,
+            $CFG->maxbytes,
+            $coursebytes,
+            $maxbytes,
+        );
 
         $this->options->userprefs = [];
         $this->options->userprefs['recentviewmode'] = get_user_preferences('filemanager_recentviewmode', '');
         if (!in_array($CFG->branch, ['403', '404', '405', '406', '500'])) {
-            user_preference_allow_ajax_update('filemanager_recentviewmode', PARAM_INT);
+            if (function_exists('user_preference_allow_ajax_update')) {
+                user_preference_allow_ajax_update('filemanager_recentviewmode', PARAM_INT);
+            }
         }
 
         // Building file picker options.
@@ -498,16 +515,21 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
 
     public function get_nonjsurl() {
         global $PAGE;
-        return new moodle_url('/repository/draftfiles_manager.php',
-                ['env' => 'fileresponsesimplifiedfilemanager', 'action' => 'browse',
-                    'itemid' => $this->options->itemid, 'subdirs' => $this->options->subdirs,
-                    'maxbytes' => $this->options->maxbytes,
-                    'areamaxbytes' => $this->options->areamaxbytes,
-                    'maxfiles' => $this->options->maxfiles,
-                    'ctx_id' => $PAGE->context->id,
-                    'course' => $PAGE->course->id,
-                    'sesskey' => sesskey()
-                ]);
+        return new moodle_url(
+            '/repository/draftfiles_manager.php',
+            [
+                'env' => 'fileresponsesimplifiedfilemanager',
+                'action' => 'browse',
+                'itemid' => $this->options->itemid,
+                'subdirs' => $this->options->subdirs,
+                'maxbytes' => $this->options->maxbytes,
+                'areamaxbytes' => $this->options->areamaxbytes,
+                'maxfiles' => $this->options->maxfiles,
+                'ctx_id' => $PAGE->context->id,
+                'course' => $PAGE->course->id,
+                'sesskey' => sesskey(),
+            ],
+        );
     }
 
     /**
@@ -560,7 +582,7 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
 
         $usercontext = context_user::instance($USER->id);
 
-        list($context, $course, $cm) = get_context_info_array($context->id);
+        [$context, $course, $cm] = get_context_info_array($context->id);
         $contexts = [$usercontext, context_system::instance()
         ];
         if (!empty($course)) {
@@ -569,10 +591,14 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
         }
         $externallink = (int) get_config(null, 'repositoryallowexternallinks');
         $repositories = repository::get_instances(
-                ['context' => $contexts, 'currentcontext' => $context,
-                    'accepted_types' => $args->accepted_types, 'return_types' => $args->return_types,
-                    'disable_types' => $disabletypes
-                ]);
+            [
+                'context' => $contexts,
+                'currentcontext' => $context,
+                'accepted_types' => $args->accepted_types,
+                'return_types' => $args->return_types,
+                'disable_types' => $disabletypes,
+            ],
+        );
 
         $return->repositories = [];
 
@@ -583,15 +609,16 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
         }
 
         $return->userprefs = [];
-        $return->userprefs['recentrepository'] = get_user_preferences('filepicker_recentrepository',
-                '');
+        $return->userprefs['recentrepository'] = get_user_preferences('filepicker_recentrepository', '');
         $return->userprefs['recentlicense'] = get_user_preferences('filepicker_recentlicense', '');
         $return->userprefs['recentviewmode'] = get_user_preferences('filepicker_recentviewmode', '');
 
         if (!in_array($CFG->branch, ['403', '404', '405', '406', '500'])) {
-            user_preference_allow_ajax_update('filepicker_recentrepository', PARAM_INT);
-            user_preference_allow_ajax_update('filepicker_recentlicense', PARAM_SAFEDIR);
-            user_preference_allow_ajax_update('filepicker_recentviewmode', PARAM_INT);
+            if (function_exists('user_preference_allow_ajax_update')) {
+                user_preference_allow_ajax_update('filepicker_recentrepository', PARAM_INT);
+                user_preference_allow_ajax_update('filepicker_recentlicense', PARAM_SAFEDIR);
+                user_preference_allow_ajax_update('filepicker_recentviewmode', PARAM_INT);
+            }
         }
 
         // Provided by form element.
@@ -604,8 +631,10 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
             // JavaScript a lot, the key NEEDS to be the repository id.
             $return->repositories[$repository->id] = $meta;
             // Register custom repository template if it has one.
-            if (method_exists($repository, 'get_upload_template') &&
-                     !array_key_exists('uploadform_' . $meta->type, $templatesinitialized)) {
+            if (
+                method_exists($repository, 'get_upload_template') &&
+                !array_key_exists('uploadform_' . $meta->type, $templatesinitialized)
+            ) {
                 $templates['uploadform_' . $meta->type] = $repository->get_upload_template();
                 $templatesinitialized['uploadform_' . $meta->type] = true;
             }
@@ -617,9 +646,11 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
             $templatesinitialized['core'] = true;
         }
         if (count($templates) > 0) {
-            $PAGE->requires->js_init_call('M.core_filepicker.set_templates',
-                    [$templates
-                    ], true);
+            $PAGE->requires->js_init_call(
+                'M.core_filepicker.set_templates',
+                [$templates],
+                true,
+            );
         }
         return $return;
     }
@@ -629,7 +660,7 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
  * A clone of the file manager renderer class with adoptions to the fileresponse question type.
  */
 class qtype_fileresponse_fileresponsesimplifiedfilemanager_renderer extends plugin_renderer_base {
-
+    // phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
     /**
      * Prints the file manager and initializes all necessary libraries
      * This is mainly taken from files/renderer.php.
@@ -662,13 +693,18 @@ class qtype_fileresponse_fileresponsesimplifiedfilemanager_renderer extends plug
         if (empty($fileresponsesimplifiedfilemanagertemplateloaded)) {
             $fileresponsesimplifiedfilemanagertemplateloaded = true;
             $this->page->requires->js_init_call(
-                    'M.form_fileresponsesimplifiedfilemanager.set_templates',
-                    [$this->fileresponsesimplifiedfilemanager_js_templates()
-                    ], true, $module);
+                'M.form_fileresponsesimplifiedfilemanager.set_templates',
+                [$this->fileresponsesimplifiedfilemanager_js_templates()],
+                true,
+                $module,
+            );
         }
-        $this->page->requires->js_init_call('M.form_fileresponsesimplifiedfilemanager.init',
-                [$fm->options
-                ], true, $module);
+        $this->page->requires->js_init_call(
+            'M.form_fileresponsesimplifiedfilemanager.init',
+            [$fm->options],
+            true,
+            $module,
+        );
 
         // Non javascript file manager.
         $html .= '<noscript>';
@@ -780,15 +816,15 @@ class qtype_fileresponse_fileresponsesimplifiedfilemanager_renderer extends plug
                 <!-- </span> -->
             </div>
             <div class="fp-viewbar btn-group float-sm-right">
-                <a role="button" title="'. get_string('displayicons', 'repository') .
+                <a role="button" title="' . get_string('displayicons', 'repository') .
                     '" class="fp-vb-icons btn btn-secondary btn-sm" href="#">
                     ' . $this->pix_icon('fp/view_icon_active', get_string('displayasicons', 'repository'), 'theme') . '
                 </a>
-                <a role="button" title="'. get_string('displaydetails', 'repository') .
+                <a role="button" title="' . get_string('displaydetails', 'repository') .
                     '" class="fp-vb-details btn btn-secondary btn-sm" href="#">
                     ' . $this->pix_icon('fp/view_list_active', get_string('displayasdetails', 'repository'), 'theme') . '
                 </a>
-                <a role="button" title="'. get_string('displaytree', 'repository') .
+                <a role="button" title="' . get_string('displaytree', 'repository') .
                     '" class="fp-vb-tree btn btn-secondary btn-sm" href="#">
                     ' . $this->pix_icon('fp/view_tree_active', get_string('displayastree', 'repository'), 'theme') . '
                 </a>
@@ -798,7 +834,7 @@ class qtype_fileresponse_fileresponsesimplifiedfilemanager_renderer extends plug
             <span class="fp-path-folder"><a class="fp-path-folder-name" href="#"></a></span>
         </div>
     </div>
-    <div class="filemanager-loading mdl-align">'.$iconprogress.'</div>
+    <div class="filemanager-loading mdl-align">' . $iconprogress . '</div>
     <div class="filemanager-container card" >
         <div class="fm-content-wrapper">
             <div class="fp-content"></div>
@@ -810,9 +846,9 @@ class qtype_fileresponse_fileresponsesimplifiedfilemanager_renderer extends plug
             <div class="dndupload-target">' .
                  $strdroptoupload . '<br/><div class="dndupload-arrow"></div></div>
             <div class="dndupload-progressbars"></div>
-            <div class="dndupload-uploadinprogress">'.$iconprogress.'</div>
+            <div class="dndupload-uploadinprogress">' . $iconprogress . '</div>
         </div>
-        <div class="filemanager-updating">'.$iconprogress.'</div>
+        <div class="filemanager-updating">' . $iconprogress . '</div>
     </div>
 </div>';
         return $html;
@@ -1622,7 +1658,7 @@ class qtype_fileresponse_fileresponsesimplifiedfilemanager_renderer extends plug
             <div class="fp-formset">
                 <div class="fp-login-popup control-group clearfix">
                     <div class="controls fp-popup">
-                        <button class="fp-login-popup-but btn-primary btn">'.get_string('login', 'repository').'</button>
+                        <button class="fp-login-popup-but btn-primary btn">' . get_string('login', 'repository') . '</button>
                     </div>
                 </div>
                 <div class="fp-login-textarea control-group clearfix">
@@ -1675,13 +1711,16 @@ class qtype_fileresponse_fileresponsesimplifiedfilemanager_renderer extends plug
      * Default contents is one text input field with name="s"
      */
     public function repository_default_searchform() {
-        $searchinput = html_writer::label(get_string('searchrepo', 'repository'), 'reposearch',
-                false, ['class' => 'accesshide'
-                ]);
-        $searchinput .= html_writer::empty_tag('input',
-                ['type' => 'text', 'id' => 'reposearch', 'name' => 's',
-                    'value' => get_string('search', 'repository')
-                ]);
+        $searchinput = html_writer::label(
+            get_string('searchrepo', 'repository'),
+            'reposearch',
+            false,
+            ['class' => 'accesshide'],
+        );
+        $searchinput .= html_writer::empty_tag(
+            'input',
+            ['type' => 'text', 'id' => 'reposearch', 'name' => 's', 'value' => get_string('search', 'repository')],
+        );
         $str = html_writer::tag('div', $searchinput, ['class' => "fp-def-search"
         ]);
 

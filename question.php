@@ -34,7 +34,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_fileresponse_question extends question_with_responses {
-
     public $responseformat;
 
     /** @var int Indicates whether an inline response is required ('0') or optional ('1')  */
@@ -146,8 +145,10 @@ class qtype_fileresponse_question extends question_with_responses {
         // Determine if the given response has online text and attachments.
         if (array_key_exists('answer', $response) && ($response['answer'] !== '')) {
             return true;
-        } else if (array_key_exists('attachments', $response)
-            && $response['attachments'] instanceof question_response_files) {
+        } else if (
+            array_key_exists('attachments', $response)
+            && $response['attachments'] instanceof question_response_files
+        ) {
             return true;
         } else {
             return false;
@@ -166,25 +167,32 @@ class qtype_fileresponse_question extends question_with_responses {
             $value2 = '';
         }
         return $value1 === $value2 && ($this->attachments == 0 ||
-                question_utils::arrays_same_at_key_missing_is_blank(
-                    $prevresponse, $newresponse, 'attachments'));
+            question_utils::arrays_same_at_key_missing_is_blank(
+                $prevresponse,
+                $newresponse,
+                'attachments',
+            )
+        );
     }
 
     public function check_file_access($qa, $options, $component, $filearea, $args, $forcedownload) {
         if ($component == 'question' && $filearea == 'response_attachments') {
             // Response attachments visible if the question has them.
             return $this->attachments != 0;
-
         } else if ($component == 'question' && $filearea == 'response_answer') {
             // Response attachments visible if the question has them.
             return $this->responseformat === 'editorfilepicker';
-
         } else if ($component == 'qtype_fileresponse' && $filearea == 'graderinfo') {
             return $options->manualcomment && $args[0] == $this->id;
-
         } else {
-            return parent::check_file_access($qa, $options, $component,
-                $filearea, $args, $forcedownload);
+            return parent::check_file_access(
+                $qa,
+                $options,
+                $component,
+                $filearea,
+                $args,
+                $forcedownload,
+            );
         }
     }
 }

@@ -32,7 +32,6 @@ function xmldb_qtype_fileresponse_upgrade($oldversion) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2019120200) {
-
         // Add "filetypeslist" column to the question type options to save the allowed file types.
         $table = new xmldb_table('qtype_fileresponse_options');
         $field = new xmldb_field('filetypeslist', XMLDB_TYPE_TEXT, null, null, null, null, null, 'responsetemplateformat');

@@ -23,7 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_qtype_fileresponse_plugin extends restore_qtype_plugin {
-
     /**
      * Returns the paths to be handled by the plugin at question level
      */
@@ -54,8 +53,10 @@ class restore_qtype_fileresponse_plugin extends restore_qtype_plugin {
         }
 
         // Detect if the question is created or mapped.
-        $questioncreated = $this->get_mappingid('question_created',
-                $this->get_old_parentid('question')) ? true : false;
+        $questioncreated = $this->get_mappingid(
+            'question_created',
+            $this->get_old_parentid('question')
+        ) ? true : false;
 
         // If the question has been created by restore, we need to create its
         // qtype_fileresponse too.

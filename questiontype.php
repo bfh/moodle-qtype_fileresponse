@@ -50,8 +50,12 @@ class qtype_fileresponse extends question_type {
 
     public function get_question_options($question) {
         global $DB;
-        $question->options = $DB->get_record('qtype_fileresponse_options',
-            array('questionid' => $question->id), '*', MUST_EXIST);
+        $question->options = $DB->get_record(
+            'qtype_fileresponse_options',
+            ['questionid' => $question->id],
+            '*',
+            MUST_EXIST,
+        );
         parent::get_question_options($question);
     }
 
@@ -81,8 +85,13 @@ class qtype_fileresponse extends question_type {
         } else {
             $options->filetypeslist = $formdata->filetypeslist;
         }
-        $options->graderinfo = $this->import_or_save_files($formdata->graderinfo,
-            $context, 'qtype_fileresponse', 'graderinfo', $formdata->id);
+        $options->graderinfo = $this->import_or_save_files(
+            $formdata->graderinfo,
+            $context,
+            'qtype_fileresponse',
+            'graderinfo',
+            $formdata->id,
+        );
         $options->graderinfoformat = $formdata->graderinfo['format'];
         /* Fileresponse doesn't display a response template. */
         $options->responsetemplate = '';
@@ -201,8 +210,13 @@ class qtype_fileresponse extends question_type {
     public function move_files($questionid, $oldcontextid, $newcontextid) {
         parent::move_files($questionid, $oldcontextid, $newcontextid);
         $fs = get_file_storage();
-        $fs->move_area_files_to_new_context($oldcontextid,
-            $newcontextid, 'qtype_fileresponse', 'graderinfo', $questionid);
+        $fs->move_area_files_to_new_context(
+            $oldcontextid,
+            $newcontextid,
+            'qtype_fileresponse',
+            'graderinfo',
+            $questionid,
+        );
     }
 
     protected function delete_files($questionid, $contextid) {
@@ -238,7 +252,7 @@ class qtype_fileresponse extends question_type {
         $expout .= '    <allowpickerplugins>' . $question->options->allowpickerplugins .
                  "</allowpickerplugins>\n";
         $files = $fs->get_area_files($contextid, 'qtype_fileresponse', 'graderinfo', $question->id);
-        $expout .= '    <graderinfo format="'.$question->options->graderinfoformat.'">' .
+        $expout .= '    <graderinfo format="' . $question->options->graderinfoformat . '">' .
             $format->writetext($question->options->graderinfo);
         $expout .= $format->write_files($files);
         $expout .= "</graderinfo>\n";
@@ -269,30 +283,50 @@ class qtype_fileresponse extends question_type {
         $question = $format->import_headers($data);
         $question->qtype = 'fileresponse';
 
-        $question->responseformat = $format->getpath($data,
-            array('#', 'responseformat', 0, '#', 'text', 0, '#'
-            ), 'plain');
-        $question->responsefieldlines = $format->getpath($data,
-            array('#', 'responsefieldlines', 0, '#'
-            ), 0);
-        $question->attachments = $format->getpath($data,
-            array('#', 'attachments', 0, '#'
-            ), 0);
-        $question->forcedownload = $format->getpath($data,
-            array('#', 'forcedownload', 0, '#'
-            ), 0);
-        $question->allowpickerplugins = $format->getpath($data,
-            array('#', 'allowpickerplugins', 0, '#'
-            ), 0);
+        $question->responseformat = $format->getpath(
+            $data,
+            ['#', 'responseformat', 0, '#', 'text', 0, '#'],
+            'plain',
+        );
+        $question->responsefieldlines = $format->getpath(
+            $data,
+            ['#', 'responsefieldlines', 0, '#'],
+            0,
+        );
+        $question->attachments = $format->getpath(
+            $data,
+            ['#', 'attachments', 0, '#'],
+            0,
+        );
+        $question->forcedownload = $format->getpath(
+            $data,
+            ['#', 'forcedownload', 0, '#'],
+            0,
+        );
+        $question->allowpickerplugins = $format->getpath(
+            $data,
+            ['#', 'allowpickerplugins', 0, '#'],
+            0,
+        );
         $question->graderinfo = array();
-        $question->graderinfo['text'] = $format->getpath($data,
-            array('#', 'graderinfo', 0, '#', 'text', 0, '#'
-            ), '', true);
-        $question->graderinfo['format'] = $format->getpath($data,
-            array('#', 'graderinfo', 0, '@', 'format'), 1);
+        $question->graderinfo['text'] = $format->getpath(
+            $data,
+            ['#', 'graderinfo', 0, '#', 'text', 0, '#'],
+            '',
+            true,
+        );
+        $question->graderinfo['format'] = $format->getpath(
+            $data,
+            ['#', 'graderinfo', 0, '@', 'format'],
+            1,
+        );
         // Restore files in graderinfo.
-        $files = $format->getpath($data, array('#', 'graderinfo', 0, '#', 'file'
-        ), array(), false);
+        $files = $format->getpath(
+            $data,
+            ['#', 'graderinfo', 0, '#', 'file'],
+            [],
+            false,
+        );
         foreach ($files as $file) {
             $filesdata = new stdclass();
             $filesdata->content = $file['#'];
