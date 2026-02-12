@@ -483,10 +483,8 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
 
         $this->options->userprefs = [];
         $this->options->userprefs['recentviewmode'] = get_user_preferences('filemanager_recentviewmode', '');
-        if (!in_array($CFG->branch, ['403', '404', '405', '406', '500'])) {
-            if (function_exists('user_preference_allow_ajax_update')) {
-                user_preference_allow_ajax_update('filemanager_recentviewmode', PARAM_INT);
-            }
+        if (($CFG->branch < 403) && function_exists('user_preference_allow_ajax_update')) {
+            user_preference_allow_ajax_update('filemanager_recentviewmode', PARAM_INT);
         }
 
         // Building file picker options.
@@ -613,12 +611,10 @@ class form_fileresponsesimplifiedfilemanager implements renderable {
         $return->userprefs['recentlicense'] = get_user_preferences('filepicker_recentlicense', '');
         $return->userprefs['recentviewmode'] = get_user_preferences('filepicker_recentviewmode', '');
 
-        if (!in_array($CFG->branch, ['403', '404', '405', '406', '500'])) {
-            if (function_exists('user_preference_allow_ajax_update')) {
-                user_preference_allow_ajax_update('filepicker_recentrepository', PARAM_INT);
-                user_preference_allow_ajax_update('filepicker_recentlicense', PARAM_SAFEDIR);
-                user_preference_allow_ajax_update('filepicker_recentviewmode', PARAM_INT);
-            }
+        if (($CFG->branch < 403) && function_exists('user_preference_allow_ajax_update')) {
+            user_preference_allow_ajax_update('filepicker_recentrepository', PARAM_INT);
+            user_preference_allow_ajax_update('filepicker_recentlicense', PARAM_SAFEDIR);
+            user_preference_allow_ajax_update('filepicker_recentviewmode', PARAM_INT);
         }
 
         // Provided by form element.
