@@ -480,7 +480,7 @@ class form_fileresponsefilemanager implements renderable {
 
         $this->options->userprefs = array();
         $this->options->userprefs['recentviewmode'] = get_user_preferences('filemanager_recentviewmode', '');
-        if (!in_array($CFG->branch, ['403', '404', '405', '406', '500'])) {
+        if ($CFG->branch < 403) {
             if (function_exists('user_preference_allow_ajax_update')) {
                 user_preference_allow_ajax_update('filemanager_recentviewmode', PARAM_INT);
             }
