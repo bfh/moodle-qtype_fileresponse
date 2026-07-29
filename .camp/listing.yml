@@ -1,0 +1,34 @@
+# camp listing manifest — descriptive content for your plugin's page.
+# Edit freely and commit; camp ingests this file at each tagged release.
+# Schema: https://camp-registry.org/schema/listing.schema.json
+name: qtype_fileresponse
+summary: File Response is a Moodle question type that provides some additional functions compared to the essay question type, which can as well be used to prompt for files in a question setting.
+description: |
+  **qtype_fileresponse** is a Moodle question type plugin that enables students to submit one or more files as their response to a quiz question.
+  It is designed for assessments where answers are provided as uploaded documents, images, spreadsheets, source code, or other file types rather
+  than text entered directly into the quiz. Unlike the standard **Essay** question type, **qtype_fileresponse** allows the file picker and available
+  file repositories to be restricted on a per-question basis when required.
+
+  ### Features
+  - Allows attachment downloads to be enabled or disabled on a per-question basis.
+  - Allows file repositories to be enabled or disabled on a per-question basis, controlling where students can select files from.
+  - Includes an option to prevent **"Save as…"** operating system dialogs that could allow participants to browse the file system or
+  open executables using the keyboard menu key, bypassing the suppressed mouse context menu. This is particularly useful when running
+  quizzes in **Safe Exam Browser (SEB)**.
+
+  ### Typical Use Cases
+  - Any quiz question that requires students to produce and upload a file as their answer.
+  - Uploading programming assignments, source code files, spreadsheets, presentations, or design documents.
+  - Secure file-based assessments conducted in **Safe Exam Browser (SEB)**, where additional restrictions on file access are required.
+
+labels:
+  # Required disclosure labels — pick all that apply (RFC §4.7):
+  #   fully-free | freemium | paid-service | external-account
+  #   donation-supported | commercial-support-available
+  - fully-free
+# screenshots:
+#   - path: .camp/screenshots/overview.png
+#     caption: Main view
+links:
+#   docs: https://…
+  issues: https://github.com/bfh/moodle-qtype_fileresponse/issues
